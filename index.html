@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>TypeSet Chat</title>
+	<style type="text/css">
+		
+		.chat-area{
+			border: 1px solid #ddd;
+			min-height: 80px;
+		    margin-bottom: 20px;
+		    overflow: scroll;
+		    max-height: 400px;
+		}
+		.chat-area div{
+			padding: 10px;
+		}
+		.chat-area div + div{
+			border-top: 1px solid #ddd;
+		}
+		.chat-input{
+			opacity: 0;
+			position: absolute;
+			text-indent: -9999px;
+		}
+		.chat{
+			border: 1px solid #333;
+			padding: 5px 10px;
+			line-height: 14px;
+			font-size: 14px;
+			cursor: text;
+			min-height: 40px;
+		}
+		.chat span{
+			line-height: 40px;
+		}
+		.cursor{
+			cursor: text;
+			display: none;
+			height: 40px;
+    		width: 1px;
+    		animation: blink 1s infinite;
+    		vertical-align: middle;
+			height: 24px;
+		}
+		@keyframes blink {
+			from{
+				background: #000;
+			}
+			to{
+				background: transparent;
+			}
+		}
+
+	</style>
+</head>
+<body>
+
+	<div class="chat-area" id="chat-area">
+		
+	</div>
+	<form>
+		<input type="text" class="chat-input" id="chat-input">
+		<div class="chat" id="chat" for="chat-input">
+			<span class=""></span>
+			<span class="cursor"></span>
+		</div>
+	</form>
+
+	<script type="text/javascript">
+
+	var Chat = (function() {
+		var chatInputBox = document.getElementById('chat-input');
+		var chatDiv = document.getElementById('chat');
+		var cursor = document.getElementsByClassName('cursor')[0];
+		var chatView = document.getElementById('chat-area');
+
+		var init = function() {
+			chatDiv.onclick = _focusOnInput;
+			chatInputBox.onblur = _defocusFromInput;
+			chatInputBox.oninput = _addEmojis;
+			document.forms[0].onsubmit = _submitForm;
+		};
+
+		var _focusOnInput = function() {
+			chatInputBox.focus();
+			cursor.style.display = 'inline-block';
+		};
+
+		var _defocusFromInput = function() {
+			cursor.style.display = 'none';
+		};
+
+		var _addEmojis = function(cxt) {
+			var cont = cxt.target.value;
+			if(cont.indexOf(':)') !== -1) {
+				cont = cont.replace(/\:\)/g, '<span><img src="https://www.facebook.com/images/emoji.php/v8/f4c/1/16/1f642.png"/></span>');
+			}
+
+			if(cont.indexOf('<3') !== -1) {
+				cont = cont.replace(/\<3/g, '<span><img src="https://www.facebook.com/images/emoji.php/v8/f6c/1/16/2764.png"/></span>');
+			}
+			chatDiv.firstElementChild.innerHTML = cont;
+		};
+
+		var _submitForm = function(e) {
+			e.preventDefault();
+			chatView.appendChild(document.createElement('div')).innerHTML = chatDiv.firstElementChild.innerHTML;
+			_focusOnInput();
+			_clearInput();
+		};
+
+		var _clearInput = function() {
+			chatDiv.firstElementChild.innerHTML = '';
+			chatInputBox.value = '';
+		};
+
+		return {init: init};
+	})();
+
+	Chat.init();
+
+
+		
+	// document.getElementById('chat').onclick = function() {
+	// 	document.getElementById('chat-input').focus();
+	// 	document.getElementsByClassName('cursor')[0].style.display = 'inline-block';
+	// };
+
+	// document.getElementById('chat-input').onblur = function() {
+	// 	document.getElementsByClassName('cursor')[0].style.display = 'none';
+	// }
+	
+	// document.getElementById('chat-input').oninput = function() {
+	// 	var chat = document.getElementById('chat');
+	// 	var cont = this.value;
+	// 	if(cont.indexOf(':)') !== -1) {
+	// 		cont = cont.replace(/\:\)/g, '<span><img src="https://www.facebook.com/images/emoji.php/v8/f4c/1/16/1f642.png"/></span>');
+	// 	}
+
+	// 	if(cont.indexOf('<3') !== -1) {
+	// 		cont = cont.replace(/\<3/g, '<span><img src="https://www.facebook.com/images/emoji.php/v8/f6c/1/16/2764.png"/></span>');
+	// 	}
+	// 	chat.firstElementChild.innerHTML = cont;
+
+	// }
+
+	// document.forms[0].onsubmit = function(e) {
+	// 	e.preventDefault();
+	// 	document.getElementById('chat-area').appendChild(document.createElement('div')).innerHTML = 
+	// 	 document.getElementById('chat').firstElementChild.innerHTML;
+	// 	document.getElementById('chat').firstElementChild.innerHTML = '';
+	// 	document.getElementById('chat-input').focus();
+	// 	document.getElementsByClassName('cursor')[0].style.display = 'inline-block';
+	// 	document.getElementById('chat-input').value = '';
+	// }
+
+	</script>
+</body>
+</html>
